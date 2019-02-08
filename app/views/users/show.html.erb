@@ -1,0 +1,50 @@
+<div class="row">
+  <div class="col-xs-6">
+    <h1>ユーザー情報</h1>
+    <hr>
+    <p>名前：<%= @user.family_name %><%= @user.first_name %>さん（<%= @user.age %>歳）</p>
+    <p>自己紹介：<%= @user.self_introduction %></p>
+    <br>
+    <% if @user.id == current_user.id %>
+      <p><a href="/users/<%= @user.id %>/edit" class="btn btn-success">ユーザー情報を編集する</a></p>
+    <% else %>
+      <% @flag = false %>
+      <% Entry.where(user_id: current_user.id).each do |e| %>
+      
+        <% if Entry.find_by(user_id: @user.id, room_id: e.room_id).present? %>
+          <% @flag = true %>
+          <% @room_id = e.room_id %>
+        <% end %>
+        
+      <% end %>
+      
+      <% if @flag %>
+        <%= link_to("チャットする", "/rooms/#{@room_id}", :class => "btn btn-warning") %>
+      <% else %>
+        <%= form_for @room do |f| %>
+          <%= fields_for @entry do |e| %>
+            <%= e.hidden_field :user_id, :value => @user.id %>
+          <% end %>
+          <%= f.submit "チャットを始める", :class => "btn btn-warning" %>
+        <% end %>
+      <% end %>
+      
+      
+      
+      
+    <% end %>
+  </div>
+  <% if @user.id == current_user.id %>
+    <div class="col-xs-6">
+      <h1>チャット一覧</h1>
+      <hr>
+      <% @entries.each do |e| %>
+        <p><a href="/rooms/<%= e.room.id %>"><strong><%= e.room.name %></strong></a></p>
+        <hr>
+      <% end %>
+      <a href="/rooms" class="btn btn-info">チャット一覧を見る</a>
+    </div>
+  <% end %>
+</div>
+<hr>
+<p><a href="/users" class="btn btn-primary">ユーザー一覧に戻る</a></p>

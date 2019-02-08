@@ -1,0 +1,13 @@
+  <h1>投稿</h1>
+  <hr>
+  <p><%= @user.family_name %><%= @user.first_name %>さん</p>
+  <h4><%= @post.content %></h4>
+  <small><%= @post.created_at %>：<%= @post.place %></small>
+  <hr>
+  <p><a href="/posts" class="btn btn-info">トップに戻る</a></p>
+  <% if user_signed_in? %>
+    <% if @post.user_id == current_user.id %>
+      <p><a href="/posts/<%= @post.id %>/edit" class="btn btn-success">投稿を編集する</a></p>
+      <p><a href="/posts/<%= @post.id %>" data-method="delete" class="btn btn-danger">投稿を削除する</a></p>
+    <% end %>
+  <% end %>
